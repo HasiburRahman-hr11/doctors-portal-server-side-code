@@ -69,24 +69,6 @@ exports.deleteAnAppointment = async (req, res) => {
 
 
 
-// Cancel User Appointment (By User)
-exports.cancelAppointment = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const isAppointment = await Appointment.findById(id);
-        if (!isAppointment) {
-            return res.status(500).json({ message: 'Appointment not found.' });
-        }
-        const updatedAppointment = await Appointment.findByIdAndUpdate(id, { status: 'canceled' });
-        res.status(200).json(updatedAppointment)
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json(error);
-    }
-}
-
-
 // Get Single Appointment
 exports.getSingleAppointment = async (req, res) => {
     const { id } = req.params;
@@ -109,28 +91,14 @@ exports.getSingleAppointment = async (req, res) => {
 exports.updateAppointment = async (req, res) => {
     const { id } = req.params;
     try {
-        if (req.user.email) {
-            const user = await User.findOne({ email: req.user.email });
-
-            if (user && user.role === 'admin') {
-                const appointment = await Appointment.findById(id);
-                if (!appointment) {
-                    return res.status(400).json({ message: 'Appointment not found' })
-                }
-
-                const updatedAppointment = await Appointment.findByIdAndUpdate(id, req.body, { new: true });
-
-                res.status(200).json(updatedAppointment);
-            } else {
-                res.status(403).json({
-                    message: 'You are not allowed to perform this action.'
-                })
-            }
-        } else {
-            res.status(404).json({
-                message: 'You are not allowed to perform this action.'
-            })
+        const appointment = await Appointment.findById(id);
+        if (!appointment) {
+            return res.status(400).json({ message: 'Appointment not found' })
         }
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(id, req.body, { new: true });
+
+        res.status(200).json(updatedAppointment);
 
     } catch (error) {
         console.log(error);

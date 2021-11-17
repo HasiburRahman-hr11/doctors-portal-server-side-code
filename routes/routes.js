@@ -24,11 +24,7 @@ const routes = [
 
 const useRoutes = (app) => {
     routes.map(route => {
-        if (route.path === '/') {
-            app.get(route.path, route.handler)
-        } else {
-            app.use(route.path, route.handler)
-        }
+        app.use(route.path, route.handler)
     })
 }
 

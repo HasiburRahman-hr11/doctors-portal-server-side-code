@@ -10,9 +10,26 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(cors());
 
-
+// Using Routes
 const useRoutes = require('./routes/routes');
-useRoutes(app)
+useRoutes(app);
+
+// Stripe Payment intent
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
+
+app.post("/create-payment-intent", async (req, res) => {
+    const { amount } = req.body;
+    const amountInt = Number.parseInt(amount, 10)*100
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+
+        amount: amountInt,
+        currency: "usd",
+        payment_method_types: ["card"],
+    });
+
+    res.status(200).json({ clientSecret: paymentIntent.client_secret });
+});
 
 
 const PORT = process.env.PORT || 8000

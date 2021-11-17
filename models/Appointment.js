@@ -26,16 +26,27 @@ const appointmentSchema = new Schema({
         type: String,
         required: true
     },
+    price: {
+        type: String,
+        required: true
+    },
     email: String,
     phone: {
         type: String,
         required: true
     },
-    status:{
-        type: String,
-        default:'pending'
+    paid: {
+        type: Boolean,
+        default: false
     },
-    address:String
+    paymentInfo: {
+        type: Object
+    },
+    status: {
+        type: String,
+        default: 'pending'
+    },
+    address: String
 
 }, { timestamps: true });
 
